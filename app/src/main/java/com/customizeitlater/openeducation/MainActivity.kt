@@ -8,9 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.customizeitlater.openeducation.ui.screens.Splash.SplashScreen
 import com.customizeitlater.openeducation.ui.theme.OpenEducationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,28 +22,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             OpenEducationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+
+                    Text("hello", Modifier.padding(innerPadding))
+                    SplashScreen({})
                 }
+
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    OpenEducationTheme {
-        Greeting("Android")
     }
 }
