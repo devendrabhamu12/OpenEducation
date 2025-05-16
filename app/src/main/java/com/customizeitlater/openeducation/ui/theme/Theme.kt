@@ -237,8 +237,8 @@ fun OpenEducationTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme ->DarkColorSchemeHighContrast
+        else ->LightColorSchemeHighContrast
     }
 
     MaterialTheme(

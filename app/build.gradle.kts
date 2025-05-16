@@ -47,6 +47,11 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.56.2")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
+    //navigation related
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
