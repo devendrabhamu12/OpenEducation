@@ -43,6 +43,25 @@ android {
 
 dependencies {
 
+
+    //retrofit kotlinserialization and okhttp
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.14")
+    // https://mvnrepository.com/artifact/com.jakewharton.retrofit/retrofit2-kotlinx-serialization-converter
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+
+    //tink related
+    // https://mvnrepository.com/artifact/com.google.crypto.tink/tink
+//    implementation("com.google.crypto.tink:tink:1.17.0")
+    // Android integration (includes AndroidKeysetManager)
+    implementation("com.google.crypto.tink:tink-android:1.17.0")
+
+    //datastore prefs
+    // https://mvnrepository.com/artifact/androidx.datastore/datastore-preferences
+    implementation("androidx.datastore:datastore-preferences:1.1.6")
+
     //hilt related
     implementation("com.google.dagger:hilt-android:2.56.2")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
