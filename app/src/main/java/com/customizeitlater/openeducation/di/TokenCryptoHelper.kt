@@ -1,11 +1,7 @@
-package com.customizeitlater.openeducation.data.crypto
+package com.customizeitlater.openeducation.di
 
 import com.google.crypto.tink.Aead
-import dagger.hilt.InstallIn
 import javax.inject.Inject
-import javax.inject.Singleton
-
-
 
 class TokenCryptoHelper @Inject constructor(
    private val aead: Aead

@@ -1,11 +1,11 @@
-package com.customizeitlater.openeducation.data.datastore
+package com.customizeitlater.openeducation.di
 
-import com.customizeitlater.openeducation.data.crypto.TokenCryptoHelper
+import com.customizeitlater.openeducation.di.TokenCryptoHelper
+import com.customizeitlater.openeducation.data.datastore.PrefsDataManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -13,7 +13,7 @@ object TokenProvider{
 
 
     @Provides
-  suspend  fun getToken( tokenCryptoHelper: TokenCryptoHelper,prefsDataManager: PrefsDataManager): String {
+  suspend  fun getToken(tokenCryptoHelper: TokenCryptoHelper, prefsDataManager: PrefsDataManager): String {
         val tokenCipher=prefsDataManager.getJwt()
         val token=tokenCryptoHelper.decrypt(tokenCipher)
         return token
