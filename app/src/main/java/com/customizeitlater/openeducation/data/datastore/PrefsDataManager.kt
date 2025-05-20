@@ -7,37 +7,47 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import android.util.Base64
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.LifecycleCoroutineScope
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 
 
-@Singleton
 class PrefsDataManager @Inject constructor(
-   val store : DataStore<Preferences>
-){
-    private object PrefKeys{
-        val JWT= stringPreferencesKey("jwt")
+    private val store: DataStore<Preferences>
+) {
+    private object PrefKeys {
+        val JWT = stringPreferencesKey("jwt")
     }
 
-    val jwt : Flow<ByteArray?> = store.data.map { it->
-        val jwtString=it[PrefKeys.JWT]
-        jwtString?.let{
+    // ✅ Suspend function to get the latest JWT
+    suspend fun getJwt(): ByteArray? {
+        val base64String = store.data.first()[PrefKeys.JWT]
+        return base64String?.let {
             Base64.decode(it, Base64.DEFAULT)
         }
     }
-    suspend fun saveJwt(jwt: ByteArray){
+
+    // ✅ Suspend function to save JWT
+    suspend fun saveJwt(jwt: ByteArray) {
         val base64String = Base64.encodeToString(jwt, Base64.DEFAULT)
-        store.edit {  prefs ->
-            prefs[PrefKeys.JWT] = base64String }
-
+        store.edit { prefs ->
+            prefs[PrefKeys.JWT] = base64String
+        }
     }
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+

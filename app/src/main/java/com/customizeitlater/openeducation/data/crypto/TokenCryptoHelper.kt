@@ -1,11 +1,12 @@
 package com.customizeitlater.openeducation.data.crypto
 
 import com.google.crypto.tink.Aead
+import dagger.hilt.InstallIn
 import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
+
 class TokenCryptoHelper @Inject constructor(
    private val aead: Aead
 ){
@@ -14,7 +15,7 @@ class TokenCryptoHelper @Inject constructor(
        return aead.encrypt(data.toByteArray(),null)
     }
 
-    fun decrypt(cipher: ByteArray): String{
+    fun decrypt(cipher: ByteArray?): String{
         return aead.decrypt(cipher,null).decodeToString()
     }
 }
