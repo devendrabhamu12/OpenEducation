@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class RegisterUser(
     val identity: String,
     val profileName: String,
+    val isDeleted: Boolean,
     val password: String,
     val email: String,
     val country: String,

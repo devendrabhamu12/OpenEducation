@@ -29,7 +29,7 @@ object NetworkComponent{
         return Retrofit.Builder()
             .baseUrl(PrivateVarsNotToUpload.Url)
             .client(client)
-            .addConverterFactory(json.asConverterFactory("Application/json".toMediaType()))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
@@ -38,4 +38,9 @@ object NetworkComponent{
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
     }
+
+//    @Provides
+//    fun provideAuthInterceptor(tokenProvider: TokenProvider): AuthInterceptor {
+//        return AuthInterceptor(tokenProvider)
+//    }
 }
