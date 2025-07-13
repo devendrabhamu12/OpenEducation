@@ -1,5 +1,6 @@
 package com.customizeitlater.openeducation.ui.screens.Register
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,11 +26,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,6 +46,10 @@ fun RegisterScreen(
     val userState by viewModel.registerUserState.collectAsState()
     val registerState by viewModel.registerState.collectAsState()
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+
+    val identity: String="${userState.identity}"
+    val password: String="${userState.password}"
 
     // Format the current time once
     val currentTime = remember {
@@ -54,6 +61,11 @@ fun RegisterScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
+
+
+
+
         Text(
             text = "Create Account",
             style = MaterialTheme.typography.headlineMedium,
@@ -179,8 +191,17 @@ fun RegisterScreen(
 
         if (registerState == RegisterState.Success) {
             LaunchedEffect(Unit) {
+
+
+                var toast = Toast.makeText(context, "Sucessful! identity: $identity", Toast.LENGTH_LONG)
+                toast.show()
+                delay(4000) // Delay for second show
+                toast= Toast.makeText(context,"password:$password",Toast.LENGTH_LONG)
+
+                toast.show()
                 onRegisterSuccess()
             }
+
         }
 
         Spacer(Modifier.height(24.dp))

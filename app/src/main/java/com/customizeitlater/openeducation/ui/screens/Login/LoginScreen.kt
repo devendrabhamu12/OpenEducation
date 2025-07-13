@@ -75,7 +75,7 @@ fun LoginScreen(
         else -> LaunchedEffect (loginState){
             if(loginState is LoginState.Success)
                 onLoginSucess()
-            Log.d("Login Helper",loginState.toString())
+            Log.d("Login Helper success",loginState.toString())
 
         }
     }

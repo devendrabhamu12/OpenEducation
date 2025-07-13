@@ -1,5 +1,6 @@
 package com.customizeitlater.openeducation.ui.screens.Splash
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,27 +24,59 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.customizeitlater.openeducation.R
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashScreen(onTimeOut:()-> Unit) {
+fun SplashScreen(onTimeOut:()-> Unit,
+                 onSuccessfulJwtRefresh:()-> Unit,
+                 onFailedJwt:()-> Unit,
+                 onFirstLogin:()-> Unit,
+              viewModel: SplashViewModel= hiltViewModel()
+) {
     var progress by remember { mutableFloatStateOf(0f) }
+    val splashState =viewModel.splashState
 
-    // Handle timeout after 2500ms
-    LaunchedEffect(Unit) {
-        delay(2500)
-        onTimeOut()
+    LaunchedEffect(splashState,progress) {
+        if ( progress >= 1f) {
+            when (splashState.value) {
+               SplashState.FirstLogin -> {onFirstLogin()
+                    Log.d("state firstLogin" ,splashState.value.toString())
+                }
+               SplashState.JwtRefreshed ->{
+                    onSuccessfulJwtRefresh()
+                    Log.d("state jwtrefreshed " ,splashState.value.toString())
+
+                }
+               SplashState.JwtFailed ->{onFailedJwt()
+                    Log.d("state jwt failed" ,splashState.value.toString())
+                   Log.d("which","jwt failed")
+
+                }
+                else -> {
+                    Log.d("which","jwt time out")
+                            onTimeOut()
+                }
+            }
+        }
     }
+//    LaunchedEffect(progress) {
+//        if (progress >= 1f && splashState == SplashState.Loading) {
+//            // Only timeout if it's still stuck in loading
+//            onTimeOut()
+//        }
+//    }
+
+
 
     // Simulate progress increment
     LaunchedEffect(Unit) {
         while (progress < 1f) {
-            delay(50)
-            progress += 0.02f
+            delay(20)
+            progress += 0.002f
         }
     }
 
@@ -80,8 +113,3 @@ fun SplashScreen(onTimeOut:()-> Unit) {
 }
 
 
-@Preview
-@Composable
-private fun Priview() {
-    SplashScreen { }
-}

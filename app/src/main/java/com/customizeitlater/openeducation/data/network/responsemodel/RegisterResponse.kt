@@ -13,8 +13,10 @@ data class RegisterResponse(
     val createdAt: String,
     val bio: String,
     val role: String,
-    val followerCount: Int,
-    val followingCount: Int,
+
+    //in later production may need changes
+    val followerCount: Int=0,
+    val followingCount: Int=0,
     val isDeleted: Boolean=false
 
 )

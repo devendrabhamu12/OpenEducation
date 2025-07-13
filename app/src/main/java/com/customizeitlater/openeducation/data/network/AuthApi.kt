@@ -1,6 +1,7 @@
 package com.customizeitlater.openeducation.data.network
 
 import com.customizeitlater.openeducation.data.network.requestmodel.LoginUser
+import com.customizeitlater.openeducation.data.network.requestmodel.RefreshTokenRequest
 import com.customizeitlater.openeducation.data.network.requestmodel.RegisterUser
 import com.customizeitlater.openeducation.data.network.responsemodel.LoginResponse
 import com.customizeitlater.openeducation.data.network.responsemodel.RegisterResponse
@@ -14,4 +15,7 @@ interface AuthApi {
 
     @POST("api/auth/login")
     suspend fun login(@Body loginUser: LoginUser): Response<LoginResponse>
+
+    @POST("api/auth/refresh-token")
+    suspend fun refreshToken(@Body refrestReq: RefreshTokenRequest ): Response<LoginResponse>
 }

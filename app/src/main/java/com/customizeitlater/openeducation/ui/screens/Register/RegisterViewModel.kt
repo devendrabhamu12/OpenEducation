@@ -1,76 +1,90 @@
 package com.customizeitlater.openeducation.ui.screens.Register
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.customizeitlater.openeducation.data.network.AuthApi
 import com.customizeitlater.openeducation.data.network.requestmodel.RegisterUser
+import com.customizeitlater.openeducation.data.network.responsemodel.ErrorResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
+import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val authApi: AuthApi
 ) : ViewModel() {
 
+    // Kotlinx Serialization JSON instance
+    private val json = Json { ignoreUnknownKeys = true }
 
-     private val _registerUserState: MutableStateFlow<RegisterUser> = MutableStateFlow(RegisterUser("","",false,"","","","",""))
+    // User registration input state
+    private val _registerUserState = MutableStateFlow(
+        RegisterUser(
+            identity = "",
+            profileName = "",
+            isDeleted = false,
+            password = "",
+            email = "",
+            country = "",
+            phoneNumber = "",
+            bio = ""
+        )
+    )
     val registerUserState: StateFlow<RegisterUser> = _registerUserState
 
+    // UI state for registration process
+    private val _registerationState = MutableStateFlow<RegisterState>(RegisterState.Idle)
+    val registerState: StateFlow<RegisterState> = _registerationState
 
-   private val _registerationState: MutableStateFlow<RegisterState> = MutableStateFlow(RegisterState.Idle)
-    val registerState: StateFlow<RegisterState> =_registerationState
-
-
-    fun registerUser(){
+    fun registerUser() {
         viewModelScope.launch {
-            _registerationState.value= RegisterState.Loading
+            _registerationState.value = RegisterState.Loading
 
+            try {
+                val response = authApi.register(registerUserState.value)
 
-          try {
-              val response=authApi.register(registerUserState.value)
-              if(response.isSuccessful){
-                  Log.d("helper registeration" ,response.toString())
-                  _registerationState.value= RegisterState.Success
-              }
-              else{
-                  Log.d("helper registeration" ,response.toString())
-                  _registerationState.value= RegisterState.Error(response.message().toString())
-              }
+                if (response.isSuccessful) {
+                    _registerationState.value = RegisterState.Success
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = try {
+                        json.decodeFromString<ErrorResponse>(errorBody ?: "").error
+                    } catch (e: Exception) {
+                        "An unexpected error occurred"
+                    }
 
-          }catch (e: Exception){
-              _registerationState.value= RegisterState.Error(e.toString())
-          }
+                    _registerationState.value = RegisterState.Error(errorMessage)
+                }
 
+            } catch (e: Exception) {
+                _registerationState.value = RegisterState.Error("Network error: ${e.localizedMessage}")
+            }
         }
     }
 
     fun updateUser(
-        identity: String = registerUserState.value.identity,
-        profileName: String = registerUserState.value.profileName,
-        password: String = registerUserState.value.password,
-        email: String = registerUserState.value.email,
-        country: String = registerUserState.value.country,
-        phoneNumber: String = registerUserState.value.phoneNumber,
-        bio: String = registerUserState.value.bio
+        identity: String = _registerUserState.value.identity,
+        profileName: String = _registerUserState.value.profileName,
+        password: String = _registerUserState.value.password,
+        email: String = _registerUserState.value.email,
+        country: String = _registerUserState.value.country,
+        phoneNumber: String = _registerUserState.value.phoneNumber,
+        bio: String = _registerUserState.value.bio
     ) {
         _registerUserState.value = RegisterUser(
             identity = identity,
             profileName = profileName,
+            isDeleted = false,
             password = password,
             email = email,
-            isDeleted = false,
             country = country,
             phoneNumber = phoneNumber,
             bio = bio
         )
     }
-
-
 }
 
 

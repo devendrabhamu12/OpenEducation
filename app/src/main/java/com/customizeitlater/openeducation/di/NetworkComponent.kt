@@ -1,6 +1,7 @@
 package com.customizeitlater.openeducation.di
 
 import com.customizeitlater.openeducation.PrivateVarsNotToUpload
+import com.customizeitlater.openeducation.data.network.AphorismApi
 import com.customizeitlater.openeducation.data.network.AuthApi
 import com.customizeitlater.openeducation.data.network.AuthInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -16,6 +17,8 @@ import retrofit2.Retrofit
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkComponent{
+
+
 
     @Provides
     fun provideRetrofit(authInterceptor: AuthInterceptor): Retrofit {
@@ -37,6 +40,11 @@ object NetworkComponent{
     @Provides
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
+    }
+
+    @Provides
+    fun provideAphorismApi(retrofit: Retrofit): AphorismApi {
+        return  retrofit.create(AphorismApi::class.java)
     }
 
 //    @Provides

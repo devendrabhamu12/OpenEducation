@@ -26,6 +26,15 @@ class LoginViewModel @Inject constructor(
     private val _loginUser = MutableStateFlow<LoginUser>(LoginUser("", ""))
     val loginUser: StateFlow<LoginUser> = _loginUser
 
+//    init {
+//        viewModelScope.launch {
+//            val jwt = prefsDataManager.getJwt()
+//            if (jwt!=null) {
+//                _loginState.value = LoginState.Success
+//            }
+//        }
+//    }
+
 
     fun updateLoginDetails(
         name: String = loginUser.value.identity, password: String = loginUser.value.password
@@ -40,24 +49,36 @@ class LoginViewModel @Inject constructor(
     fun loginUser() {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
-            try {
-                val loginResponse = authApi.login(_loginUser.value)
 
-                if (loginResponse.isSuccessful) {
-                    val token = loginResponse.body()?.jwt
-                    if(token!=null)
-                    prefsDataManager.saveJwt(tokenCryptoHelper.encrypt(token))
-                    _loginState.value = LoginState.Success
+            try {
+                val response = authApi.login(_loginUser.value)
+
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    val accessToken = body?.accessToken
+                    val refreshToken = body?.refreshToken
+
+                    if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
+                        prefsDataManager.saveJwt(tokenCryptoHelper.encrypt(accessToken))
+                        prefsDataManager.saveRefreshJwt(tokenCryptoHelper.encrypt(refreshToken))
+                        _loginState.value = LoginState.Success
+                        prefsDataManager.saveFirstLogin(false)
+                    } else {
+                        _loginState.value = LoginState.Error("Empty token response from server")
+                    }
+
                 } else {
+                    Log.d("LoginHelper", "Login failed: ${response.code()} ${response.errorBody()?.string()}")
                     _loginState.value = LoginState.Error("Invalid credentials")
                 }
 
             } catch (e: Exception) {
-                Log.d("Login Helper", e.toString())
+                Log.e("LoginHelper", "Exception during login", e)
                 _loginState.value = LoginState.Error("Network error: ${e.localizedMessage}")
             }
         }
     }
+
 
 }
 
